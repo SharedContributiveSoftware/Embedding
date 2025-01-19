@@ -6,5 +6,6 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Created `IDatabase` class in `src/data/idatabase.py`. [dev/aingeru]
+- Created `SQLiteDatabase` class in `src/data/sqllitedatabase.py`. [dev/aingeru]
 
 ### Changed
