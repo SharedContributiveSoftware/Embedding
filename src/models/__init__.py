@@ -4,8 +4,8 @@ from .gamereview import GameReview
 from .gamereviewembeddings import GameReviewEmbeddings
 
 __all__ = [
-    "IReview",
-    "GameReview,
+    IReview,
+    GameReview,
     GameReviewEmbeddings
 
 ]
