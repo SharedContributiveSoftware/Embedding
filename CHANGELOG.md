@@ -10,5 +10,6 @@ All notable changes to this project will be documented in this file.
 - Created `IReview` class in `src/models/ireview.py`. [dev/aingeru]
 - Created `GameReview` class in `src/models/gamereview.py`. [dev/aingeru]
 - Created `GameReviewEmbeddings` class in `src/models/gamereviewembeddings.py`. [dev/aingeru]
+- Created `EmbeddingService` class in `src/services/embedding_service.py`. [dev/aingeru]
 
 ### Changed
