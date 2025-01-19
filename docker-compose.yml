@@ -1,0 +1,8 @@
+services:
+  embedding:
+    image: embedding
+    container_name: embedding
+    build: .
+    volumes:
+      - .:/app
+    tty: true

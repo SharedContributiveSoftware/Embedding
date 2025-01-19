@@ -13,5 +13,6 @@ All notable changes to this project will be documented in this file.
 - Created `EmbeddingService` class in `src/services/embedding_service.py`. [dev/aingeru]
 - `src/utils/constants.py`. [dev/lukas]
 - `src/samples/mock_embedding.json`. [dev/lukas]
+- Docker dependencies
 
 ### Changed
