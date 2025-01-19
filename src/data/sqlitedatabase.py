@@ -1,10 +1,12 @@
 import sqlite3
+from contextlib import contextmanager
+from typing import Optional
 
 from src.data.idatabase import IDatabase
 
 
 class SQLiteDatabase(IDatabase):
-    __connection: sqlite3.Connection = None
+    _connection: sqlite3.Connection = None
 
     @classmethod
     def connect(cls, name: str):
@@ -20,5 +22,9 @@ class SQLiteDatabase(IDatabase):
         cls._connection = None
 
     @classmethod
-    def get_cursor(cls):
-        yield cls.connection.cursor()
+    @contextmanager
+    def get_cursor(cls) -> Optional[sqlite3.Cursor]:
+        if cls._connection is None:
+            raise ValueError("Database connection is not setted")
+
+        yield cls._connection.cursor()
