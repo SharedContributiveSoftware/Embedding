@@ -1,8 +1,10 @@
 import sqlite3
+
 from src.data.idatabase import IDatabase
 
+
 class SQLiteDatabase(IDatabase):
-    connection: sqlite3.Connection = None
+    __connection: sqlite3.Connection = None
 
     @classmethod
     def connect(cls, name: str):
