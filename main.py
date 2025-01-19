@@ -1,90 +1,10 @@
-import sqlite3
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from typing import List
 
 import httpx
 
-
-@dataclass(eq=True, frozen=True)
-class IReview(ABC):
-    review_id: int
-    author: str
-    content: str
-    helpfulness: float
-    timestamp: str
-
-    @abstractmethod
-    def __hash__(self):
-        raise NotImplementedError("Not implemented yet")
-
-
-@dataclass(eq=True, frozen=True)
-class GameReview(IReview):
-    def __hash__(self) -> int:
-        return self.review_id
-
-@dataclass(eq=True, frozen=True)
-class GameReviewEmbeddings:
-    embedding: List[float]
-    reviews: List[GameReview]
-
-class IDatabase:
-    database_name: str = None
-    connection_name: str = None
-
-    @classmethod
-    def connect(cls, name: str):
-        raise NotImplementedError("Not implemented yet")
-    def disconnect(self):
-        raise NotImplementedError("Not implemented yet")
-    def get_connection_name(self):
-        return self.connection_name
-    def get_database_name(self):
-        return self.database_name
-    def get_cursor(self):
-        raise NotImplementedError("Not implemented yet")
-    @classmethod
-    def create_table(cls, review: IReview):
-        raise NotImplementedError("Not implemented yet")
-
-
-class SQLiteDatabase(IDatabase):
-    connection: sqlite3.Connection = None
-
-    @classmethod
-    def connect(cls, name: str):
-        cls.database_name = name
-        cls.connection = sqlite3.connect(cls.database_name)
-
-    @classmethod
-    def get_cursor(cls):
-        yield cls.connection.cursor()
-
-class EmbeddingsService:
-    @classmethod
-    def insert(
-        cls,
-        embeddings_data: GameReviewEmbeddings,
-        database: IDatabase):
-
-        pass
-
-    @classmethod
-    def create_table(cls, database: IDatabase):
-        with database.get_cursor() as cursor:
-            cursor.execute(
-                f"""CREATE TABLE IF NOT EXISTS embeddings_data.table_name (embedding, review_id)"""
-            )
-    # with database.get_cursor() as cursor:
-    #   cursor.execute(
-    #       f"""INSERT INTO embeddings_data.table_name (embedding, review_id) VALUES (?, ?)""",
-    #       (embeddings_data.embedding, embeddings_data.reviews)
-    #   )
-    #   cursor.commit()
-
-
-BASE_URL = "https://store.steampowered.com/appreviews/50"
+from src.data import SQLiteDatabase
+from src.models import GameReview
+from src.utils import constants
 
 common_params = {
     "language": "english",
@@ -99,53 +19,14 @@ def fetch_reviews(review_type):
     params["review_type"] = review_type
 
     with httpx.Client() as client:
-        response = client.get(BASE_URL, params=params)
+        response = client.get(constants.BASE_URL, params=params)
         if response.status_code == 200:
             return response.json()["reviews"]
         else:
             response.raise_for_status()
 
 def embed(allReviews: List[str]):
-    return {
-      "object": "list",
-      "data": [
-        {
-          "object": "embedding",
-          "index": 0,
-          "embedding": [
-            0.006929283495992422,
-            -0.005336422007530928,
-            4.547132266452536e-05,
-            -0.024047505110502243
-          ],
-        },
-        {
-          "object": "embedding",
-          "index": 0,
-          "embedding": [
-              -0.006929283495992422,
-              -0.005336422007530928,
-              -4.547132266452536e-05,
-              -0.024047505110502243
-          ],
-        },
-        {
-          "object": "embedding",
-          "index": 0,
-          "embedding": [
-              0.006929283495992422,
-              0.005336422007530928,
-              4.547132266452536e-05,
-              0.024047505110502243
-          ],
-        }
-      ],
-      "model": "text-embedding-3-small",
-      "usage": {
-        "prompt_tokens": 5,
-        "total_tokens": 5
-      }
-    }
+    return constants.EMBEDDING_SAMPLE_DATA
 
 def parse_reviews(raw_reviews):
     SQLiteDatabase.connect('embeddings.db')
