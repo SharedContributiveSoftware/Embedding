@@ -9,7 +9,15 @@ class SQLiteDatabase(IDatabase):
     @classmethod
     def connect(cls, name: str):
         cls.database_name = name
-        cls.connection = sqlite3.connect(cls.database_name)
+        cls._connection = sqlite3.connect(cls.database_name)
+
+    @classmethod
+    def disconnect(cls):
+        if cls._connection is None:
+            return
+
+        cls._connection.close()
+        cls._connection = None
 
     @classmethod
     def get_cursor(cls):
